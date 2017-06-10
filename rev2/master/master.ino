@@ -5,7 +5,7 @@ int RGBAX[5] = {255, 255, 255};
 
 void setup() {
   Wire.begin();
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial);
   Serial.println("esp started");
 }
@@ -16,11 +16,11 @@ void loop() {
   Serial.println("state: ");
   if(Switch) {
     Switch = false;
-    RGBAX[1] = 0;
+    loopData(0);
     Serial.println("off");
   } else {
     Switch = true;
-    RGBAX[1] = 255;
+    loopData(255);
     Serial.println("on");
   }
   
@@ -35,3 +35,10 @@ void loop() {
   Serial.println();
   delay(500);
 }
+
+void loopData(int data) {
+  for(int i = 0; i < 5; i++) {
+    RGBAX[i] = data;
+  }
+}
+
