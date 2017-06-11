@@ -3,7 +3,7 @@
 #include <ArduinoJson.h>
 
 //ip config
-IPAddress ip(192, 168, 1, 103);
+IPAddress ip(192, 168, 1, 102);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 
@@ -24,7 +24,7 @@ int address;
 void setup() {
   Serial.begin(115200);
   delay(100);
-  //WiFi.config(ip, gateway, subnet);
+  WiFi.config(ip, gateway, subnet);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -66,10 +66,10 @@ void loop() {
 
             JsonObject& json = JSONBuffer.parseObject(body);
             if (json.success()) {
-              RGBAX[0] = json["R"];
-              RGBAX[1] = json["G"];
-              RGBAX[2] = json["B"];
-              RGBAX[3] = json["A"];
+              RGBAX[0] = normalize(json["R"]);
+              RGBAX[1] = normalize(json["G"]);
+              RGBAX[2] = normalize(json["B"]);
+              RGBAX[3] = normalize(json["A"]);
               RGBAX[4] = json["X"];
               address = json["address"];
 
@@ -78,7 +78,7 @@ void loop() {
               Serial.println("json error");
             }
             client.println(getResponseString());
-
+            break;
           }
         }
       }
@@ -123,6 +123,12 @@ String getResponseString() {
   res += "{\"msg\":\"Have a nice day\"}\r\n";
   res += "\r\n";
   return res;
+}
+
+int normalize(int data) {
+  int i = 255 - data;
+  Serial.println("normalized data: " + String(i));
+  return i;
 }
 
 String ipToString(IPAddress ip) {
