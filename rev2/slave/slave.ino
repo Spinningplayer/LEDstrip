@@ -1,6 +1,7 @@
 #include <TinyWireS.h>
 
 
+
 #define ADDRESS 0x7
 #define R 8
 #define G 7
@@ -10,6 +11,8 @@
 int RGBAX[5];
 
 void setup() {
+  TCCR1B = TCCR1B & B11111000 | B00000001; //this changes the PWM frequency to 32kHz
+  TCCR0B = TCCR0B & B11111000 | B00000001; //this changes the PWM frequency to 62.5kHz
   TinyWireS.begin(ADDRESS);
   TinyWireS.onReceive(receiveEvent);
   pinMode(R, OUTPUT);
@@ -36,5 +39,6 @@ void receiveEvent(uint8_t howMany) {
   analogWrite(B, RGBAX[2]);
   analogWrite(A, RGBAX[3]);
 }
+
 
 
