@@ -2,9 +2,9 @@
 
 
 #define ADDRESS 0x7
-#define R 0
-#define G 1
-#define B 2
+#define R 8
+#define G 7
+#define B 5
 #define A 3
 
 int RGBAX[5];
