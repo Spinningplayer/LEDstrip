@@ -10,8 +10,13 @@ IPAddress subnet(255, 255, 255, 0);
 typedef enum { METHOD_ERR = 0, GET, POST } HTTP_METHOD;
 
 //network credentials
-const char *ssid = "Connecting....";
-const char *password = "Smartphone1234";
+//const char *ssid = "Connecting....";
+//const char *password = "Smartphone1234";
+
+//phone network credentials
+const char *ssid = "networkThijs";
+const char *password = "Welkom01";
+
 
 WiFiServer server(8080);
 
@@ -24,7 +29,7 @@ int address;
 void setup() {
   Serial.begin(115200);
   delay(100);
-  WiFi.config(ip, gateway, subnet);
+  //WiFi.config(ip, gateway, subnet);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -50,9 +55,9 @@ void loop() {
 
         String line = client.readStringUntil('\r');
         httpHeader += line;
-
+       
         if ( line.length() == 1 && line[0] == '\n') {
-
+          Serial.println("Header: " + httpHeader);
           // Handle GET
           if (GET == parseHeader(httpHeader)) {
             client.println(getResponseString());
@@ -61,6 +66,7 @@ void loop() {
 
           if (POST == parseHeader(httpHeader)) {
             String body = client.readStringUntil('\r');
+            Serial.println("body: " + body);
 
             StaticJsonBuffer<1000> JSONBuffer;
 
@@ -93,6 +99,7 @@ void sendLedData(int address) {
   Wire.write(RGBAX[1]);
   Wire.write(RGBAX[2]);
   Wire.write(RGBAX[3]);
+  Wire.write(RGBAX[4]);
   Serial.println("return: ");
   Serial.println(Wire.endTransmission());
 }
@@ -103,7 +110,7 @@ String postResponseString() {
   res += "Connection: close\r\n";
   res += "Content-Type: application/json\r\n";
   res += "\r\n";
-  res += "{\"msg\":\"greetings from the esp8266!\"}\r\n";
+  res += "{\"msg\":\"post success\"}\r\n";
   res += "\r\n";
   return res;
 }
