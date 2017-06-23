@@ -8,7 +8,6 @@
 // AP credentials
 //
 const char *ssid = "networkThijs";
-//const char *password = "WTHcc8SW";
 const char *password = "Welkom01";
 
 IPAddress ip(192, 168, 1, 3);

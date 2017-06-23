@@ -1,94 +1,147 @@
 #include <ESP8266WiFi.h>
 #include <Wire.h>
+#include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
 
-const char* ssid = "networkThijs";
-const char* pass = "Welkom01";
-
-WiFiServer server(80);
+//ip config
 IPAddress ip(192, 168, 1, 102);
-IPAddress gateway(192,168,0,1);
-IPAddress subnet(255,255,255,0);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
 
-int led = 7;
-bool ledState = false;
+typedef enum { METHOD_ERR = 0, GET, POST } HTTP_METHOD;
+
+//network credentials
+//const char *ssid = "Connecting....";
+//const char *password = "Smartphone1234";
+
+//phone network credentials
+const char *ssid = "networkThijs";
+const char *password = "Welkom01";
+
+
+WiFiServer server(8080);
+
 boolean Switch = false;
 int RGBAX[5] = {255, 255, 255};
+int counter;
+boolean switchOn = false;
+int address;
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Serial started");
-  
-  pinMode(led, OUTPUT);
-  digitalWrite(led, LOW);
-  
-  WiFi.begin(ssid, pass);
+  delay(100);
   //WiFi.config(ip, gateway, subnet);
-  
-  while(WiFi.status() != WL_CONNECTED) {
-    if(ledState) {
-      digitalWrite(led, HIGH);
-      ledState = !ledState;
-    } else {
-      digitalWrite(led, LOW);
-      ledState = !ledState;
-    }
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
     delay(500);
   }
-  Serial.println("Wifi connected");
-  
   server.begin();
-  Serial.println("Server started");
-  
+
   Wire.begin();
-  
+  Serial.println("esp started on " + ipToString(WiFi.localIP()));
+  sendLedData(7);
 }
 
 void loop() {
   WiFiClient client = server.available();
-  if(!client){
-    return;
-  }
-  Serial.println("============");
-  
-  String request = client.readStringUntil('\r');
-  Serial.println(request);
-  
-  Serial.println("state: ");
 
-  if(request.indexOf("/strip/on") > 0) {
-    Serial.print("trigger on");
-    for(int i = 0; i < 4; i++) {
-      RGBAX[i] = 0;
+  if ( client ) {
+    String httpHeader = "";
+
+    while (client.connected()) {
+
+      if (client.available()) {
+
+        String line = client.readStringUntil('\r');
+        httpHeader += line;
+       
+        if ( line.length() == 1 && line[0] == '\n') {
+          Serial.println("Header: " + httpHeader);
+          // Handle GET
+          if (GET == parseHeader(httpHeader)) {
+            client.println(getResponseString());
+            break;
+          }
+
+          if (POST == parseHeader(httpHeader)) {
+            String body = client.readStringUntil('\r');
+            Serial.println("body: " + body);
+
+            StaticJsonBuffer<1000> JSONBuffer;
+
+            JsonObject& json = JSONBuffer.parseObject(body);
+            if (json.success()) {
+              RGBAX[0] = normalize(json["R"]);
+              RGBAX[1] = normalize(json["G"]);
+              RGBAX[2] = normalize(json["B"]);
+              RGBAX[3] = normalize(json["A"]);
+              RGBAX[4] = json["X"];
+              address = json["address"];
+
+              sendLedData(address);
+            } else {
+              Serial.println("json error");
+            }
+            client.println(getResponseString());
+            break;
+          }
+        }
+      }
     }
+    client.stop();
   }
-  
-  if(request.indexOf("/strip/off") > 0) {
-    Serial.print("trigger off");
-    for(int i = 0; i < 4; i++) {
-      RGBAX[i] = 255;
-    }
-  }
-  /*
-  if(Switch) {
-    Switch = false;
-    RGBAX[1] = 0;
-    Serial.println("off");
-  } else {
-    Switch = true;
-    RGBAX[1] = 255;
-    Serial.println("on");
-  }
-  */
-  
-  
-  Wire.beginTransmission(7);
-    Wire.write(RGBAX[0]);
-    Wire.write(RGBAX[1]);
-    Wire.write(RGBAX[2]);
-    Wire.write(RGBAX[3]);
+}
+
+void sendLedData(int address) {
+  Wire.beginTransmission(address);
+  Wire.write(RGBAX[0]);
+  Wire.write(RGBAX[1]);
+  Wire.write(RGBAX[2]);
+  Wire.write(RGBAX[3]);
+  Wire.write(RGBAX[4]);
   Serial.println("return: ");
   Serial.println(Wire.endTransmission());
-  
-  Serial.println();
-  client.flush();
+}
+
+String postResponseString() {
+  String res = "";
+  res += "HTTP/1.1 200 OK\r\n";
+  res += "Connection: close\r\n";
+  res += "Content-Type: application/json\r\n";
+  res += "\r\n";
+  res += "{\"msg\":\"post success\"}\r\n";
+  res += "\r\n";
+  return res;
+}
+
+HTTP_METHOD parseHeader(String header) {
+  if ( header.indexOf("GET") >= 0 ) return GET;
+  if ( header.indexOf("POST") >= 0 ) return POST;
+  return METHOD_ERR;
+}
+
+String getResponseString() {
+  String res = "";
+  res += "HTTP/1.1 200 OK\r\n";
+  res += "Connection: close\r\n";
+  res += "Content-Type: application/json\r\n";
+  res += "\r\n";
+  res += "{\"msg\":\"Have a nice day\"}\r\n";
+  res += "\r\n";
+  return res;
+}
+
+int normalize(int data) {
+  int i = 255 - data;
+  Serial.println("normalized data: " + String(i));
+  return i;
+}
+
+String ipToString(IPAddress ip) {
+  String s = "";
+  for (int i = 0; i < 4; i++)
+    s += i  ? "." + String(ip[i]) : String(ip[i]);
+  return s;
 }
