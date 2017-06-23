@@ -12,10 +12,9 @@ int RGBAX[5];
 int counter = 0;
 
 void setup() {
-//  TCCR1B = TCCR1B & B11111000 | B00000001; //this changes the PWM frequency to 32kHz
-//  TCCR0B = TCCR0B & B11111000 | B00000001; //this changes the PWM frequency to 62.5kHz
-  TCCR1B = (0 << CS12), (0 << CS11), (1 << CS10);
-  TCCR0B = (0 << CS12), (0 << CS11), (1 << CS10);
+  TCCR1B = TCCR1B & B11111000 | 0x01; 
+  TCCR0B = TCCR0B & B11111000 | 0x02; 
+  
   TinyWireS.begin(ADDRESS);
   TinyWireS.onReceive(receiveEvent);
   pinMode(R, OUTPUT);
