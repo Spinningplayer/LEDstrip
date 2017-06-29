@@ -27,6 +27,8 @@ int counter;
 boolean switchOn = false;
 int address;
 
+int currentMillis;
+
 void setup() {
   Serial.begin(115200);
   delay(100);
@@ -49,6 +51,10 @@ void loop() {
 
   if ( client ) {
     String httpHeader = "";
+    Serial.println("");
+    Serial.println("==============================");
+    Serial.println("Client connected");
+    currentMillis = millis();
 
     while (client.connected()) {
 
@@ -69,7 +75,7 @@ void loop() {
             String body = client.readStringUntil('\r');
             Serial.println("body: " + body);
 
-            StaticJsonBuffer<1000> JSONBuffer;
+            StaticJsonBuffer<300> JSONBuffer;
 
             JsonObject& json = JSONBuffer.parseObject(body);
             if (json.success()) {
@@ -85,6 +91,8 @@ void loop() {
               Serial.println("json error");
             }
             client.println(getResponseString());
+            Serial.println("response time: ");
+            Serial.print((millis() - currentMillis));
             break;
           }
         }
