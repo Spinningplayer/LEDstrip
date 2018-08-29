@@ -13,8 +13,8 @@ IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 //network credentials
-const char *ssid = "xxx";
-const char *password = "xxx";
+const char *ssid = "networkThijs";
+const char *password = "Welkom1690";
 
 //RGB array plus extra optional values
 int RGBAX[5] = {255, 255, 255};
@@ -75,7 +75,7 @@ void setup() {
     Serial.println();
     
     // Setup WiFi configuration and connect
-    WiFi.config(ip, gateway, subnet);
+    // WiFi.config(ip, gateway, subnet);
     WiFi.begin(ssid, password);
 
     // Log IP to serial

@@ -1,0 +1,48 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=strip_controller_board
+*Date=14:05:08
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;61.3918;-18.9794;0;Bottom;Copper Fill12
+2;;TO92 [THT];42.5566;-22.7322;0;Bottom;Q4
+3;;;54.8386;-41.8648;0;Bottom;Copper Fill4
+4;;;43.6626;-26.6756;0;Bottom;Copper Fill7
+5;;;56.6166;-16.5664;0;Bottom;Copper Fill13
+6;;TO220 [THT];65.2261;-16.7251;0;Bottom;Q2
+7;;;42.3164;-28.225;0;Bottom;Copper Fill15
+8;;;49.9872;-19.081;0;Bottom;Copper Fill11
+9;;DIP (Dual Inline) [THT];49.9861;-46.9511;90;Bottom;IC1
+10;;;60.2996;-12.2992;0;Bottom;Copper Fill14
+11;;;48.768;-40.5694;0;Bottom;Copper Fill5
+12;1k;THT;49.9861;-32.9811;-90;Bottom;R3
+13;;;58.9534;-41.9918;0;Bottom;Copper Fill3
+14;;TO220 [THT];49.9861;-16.7251;0;Bottom;Q6
+15;;TO92 [THT];57.7966;-22.7322;0;Bottom;Q1
+16;1k;THT;42.3661;-32.9811;-90;Bottom;R2
+17;;THT;51.2561;-10.2481;-90;Bottom;J2
+18;;TO92 [THT];50.1766;-22.7322;0;Bottom;Q3
+19;;TO220 [THT];34.7461;-16.7251;0;Bottom;Q5
+20;1k;THT;57.6061;-32.9811;-90;Bottom;R1
+21;;;43.3578;-16.5664;0;Bottom;Copper Fill10
+22;;;51.2572;-26.6756;0;Bottom;Copper Fill8
+23;;THT;60.2731;-46.9511;0;Bottom;J1
+24;;;52.197;-44.3286;0;Bottom;Copper Fill2
+25;;THT;63.9561;-35.5211;90;Bottom;J3
+26;;;39.5732;-18.9794;0;Bottom;Copper Fill9
+27;;;53.5178;-49.4594;0;Bottom;Copper Fill1
+28;;;66.5734;-36.48;0;Bottom;Copper Fill6
+29;10k;THT;52.5261;-30.4411;90;Bottom;R5
+30;10k;THT;60.1461;-30.4411;90;Bottom;R4
+31;10k;THT;44.9061;-30.4411;90;Bottom;R6
+32;;THT;63.9561;-38.0611;90;Bottom;J4
+33;;;42.3164;-28.225;0;Bottom;Copper Fill16
